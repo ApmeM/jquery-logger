@@ -1,6 +1,6 @@
 /**
  * Extension for jQuery for log any data and objects into 
- * console.log, error console or specified DOM element
+ * console.log, error console or specified HTML element
  * (for example div).
  * Created by Artem Votincev (apmem.org)
  * Copyiright (c) 2010 Artem Votincev (apmem.org)
@@ -12,18 +12,37 @@
 
 (function($){
 
+/**
+ * Constants used in code to view log in iappropriate format
+ * for error console it should be displayed as text
+ * for html controls it should be displayed as html
+*/
 	var LOG_HTML = 1;
 	var LOG_TEXT = 2;
-	
+
+/**
+ * Recursive function that check all properties and display
+ * them in specified format
+ * @param obj is object to display
+ * @param objName is text representation of the object
+ * @param logType reflect displaying type (should be one of the types from const section)
+ * @param visitedObjs is array with all objects was visited in previous (to avoid recursion)
+ * @throw index out of range exception (logType is not supplied)
+ * @return string with all properies of provided object
+ * @private
+*/
 	var logExpand = function(obj, objName, logType, visitedObjs){
 		var result = "";
+		// Check all properties of the current object
 	    for (var i in obj) {
+			// If current property is object - we need to show all its properties too
 			if(typeof obj[i] == 'object'){
+				// if this object was not visited - go into its properties
 				if($.inArray(obj[i], visitedObjs) == -1){
 					visitedObjs.push(obj[i]);
 					result += logExpand(obj[i], objName + '.' + i, logType, visitedObjs);
-				}else
-				{
+				}else {
+				// if this object already wisited - just show name and skip it
 					if(logType == LOG_HTML)
 						result += "<b>" + objName + "." + i + "</b> = " + obj[i] + "<br />";
 					else if(logType == LOG_TEXT)
@@ -32,6 +51,7 @@
 						throw new Error('Index out of range exception: logType = ', logType);
 				}
 			} else{
+				// If this is not an object - just show its value
 				if(logType == LOG_HTML)
 					result += "<b>" + objName + "." + i + "</b> = " + obj[i] + "<br />";
 				else if(logType == LOG_TEXT)
@@ -42,7 +62,11 @@
 		}
 		return result;
 	}
-
+/**
+ * jQuery extension $.log print all arguments of the function into window.console
+ * or if it is not exist - to error console with the help of throw Error in separate thread.
+ * @member $
+*/
 	$.log = function(){ 
 		if(arguments.length == 0) // Nothing to log, everything logged successfully :)
 			return true;
@@ -70,6 +94,10 @@
 		return true;
 	};
 
+/**
+ * jQuery extension $.fn.log print all arguments of the function into the html object
+ * @member $
+*/
 	$.fn.log = function(obj) {
 		// Going to log into the specified control
 //		var obj = [].slice.call(arguments);
