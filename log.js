@@ -1,3 +1,15 @@
+/**
+ * Extension for jQuery for log any data and objects into 
+ * console.log, error console or specified DOM element
+ * (for example div).
+ * Created by Artem Votincev (apmem.org)
+ * Copyiright (c) 2010 Artem Votincev (apmem.org)
+ *
+ * @requires jQuery.js
+ * @version 1.0 
+ * @author artem
+ */
+
 (function($){
 
 	var LOG_HTML = 1;
@@ -7,8 +19,6 @@
 		var result = "";
 	    for (var i in obj) {
 			if(typeof obj[i] == 'object'){
-				if(visitedObjs == undefined)
-					visitedObjs = new Array();
 				if($.inArray(obj[i], visitedObjs) == -1){
 					visitedObjs.push(obj[i]);
 					result += logExpand(obj[i], objName + '.' + i, logType, visitedObjs);
@@ -52,7 +62,9 @@
 		} else {
 			// Firebug is not installed (or this browser do not support console)
 			// expand object and throw it in separate thread to not stop current operation
-			var expanded = logExpand(args, 'args', LOG_TEXT);
+			var arr = [];
+			var expanded = logExpand(args, 'args', LOG_TEXT, arr);
+			arr = [];
 		    setTimeout(function(){ throw new Error(expanded); }, 0);
 		}
 		return true;
@@ -61,8 +73,10 @@
 	$.fn.log = function(obj) {
 		// Going to log into the specified control
 //		var obj = [].slice.call(arguments);
-		var args = logExpand(obj, 'args', LOG_HTML);
+		var arr = [];
+		var args = logExpand(obj, 'args', LOG_HTML, arr);
 		this.html(args);
+		arr = [];
 	}
 })(jQuery);
 
