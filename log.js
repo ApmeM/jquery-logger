@@ -103,7 +103,7 @@
 //		var obj = [].slice.call(arguments);
 		var arr = [];
 		var args = logExpand(obj, 'args', LOG_HTML, arr);
-		this.html(args);
+		this.html(this.html() + "<hr>" + args);
 		arr = [];
 	}
 })(jQuery);
