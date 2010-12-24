@@ -21,6 +21,17 @@
 	var LOG_TEXT = 2;
 
 /**
+ * checking error "Permission denied for <file://> to get property XPCComponents.classes"
+**/
+	var test = '';
+	try{
+	    test = Components.classes;
+	} catch(e){
+		alert(e);
+	}
+    alert(test);
+
+/**
  * Recursive function that check all properties and display
  * them in specified format
  * @param obj is object to display

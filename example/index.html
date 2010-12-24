@@ -4,7 +4,7 @@
         <title></title>
         <meta charset="UTF-8">
         <script src="jquery.js"></script>
-        <script src="jquery.log.js"></script>
+        <script src="../jquery.log.js"></script>
     </head>
     <body>
 		<script>
@@ -16,6 +16,7 @@
 				o.recur = o;
 				$.log(o);
 				$('#script').log(o);
+				$('#script').log($(document));
 			});
 		</script>
 		<div id='script'></div>
