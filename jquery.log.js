@@ -55,11 +55,8 @@
 				// if this object was already visited - skip it
 				$.inArray(objVal, visitedObjs) == -1 && Object.prototype.toString.call(objVal) != '[object nsXPCComponents]'
 			){
-				try{
-					visitedObjs.push(objVal);
-					result += logExpand(objVal, objName + '.' + i, logType, visitedObjs);
-				}catch(e){
-				}
+				visitedObjs.push(objVal);
+				try { result += logExpand(objVal, objName + '.' + i, logType, visitedObjs); } catch(e){}
 			} else{
 				// If this is not an object - just show its value
 				result += logPrint(objName + "." + i, objVal, logType);
@@ -106,7 +103,7 @@
 	$.fn.log = function(obj) {
 		// Going to log into the specified control
 //		var obj = [].slice.call(arguments);
-		var arr = [];
+		var arr = [obj];
 		var args = logExpand(obj, 'args', LOG_HTML, arr);
 		this.html(this.html() + "<hr>" + args);
 		arr = [];
