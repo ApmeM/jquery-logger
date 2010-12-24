@@ -8,6 +8,7 @@
  * @requires jQuery.js
  * @version 1.0 
  * @author artem
+ * @download http://hg.apmem.org/jq-log/
  */
 
 (function($){
@@ -20,6 +21,10 @@
 	var LOG_HTML = 1;
 	var LOG_TEXT = 2;
 
+/**
+ * Print name-value pair into string with provided logType
+ * Replace html special chars to be sure we will not run script once again
+*/
 	var logPrint = function(name, value, logType){
 		if(logType == LOG_HTML)
 		{
@@ -51,12 +56,16 @@
 			if(
 				// If current property is object - we need to show all its properties too
 				typeof(objVal) == 'object' &&
-				// if this is nsXPCComponent - skip it (or it will show permission denied
+				// if this is nsXPCComponent - skip it (or it will show permission denied)
 				// if this object was already visited - skip it
 				$.inArray(objVal, visitedObjs) == -1 && Object.prototype.toString.call(objVal) != '[object nsXPCComponents]'
 			){
 				visitedObjs.push(objVal);
-				try { result += logExpand(objVal, objName + '.' + i, logType, visitedObjs); } catch(e){}
+				try { 
+					result += logExpand(objVal, objName + '.' + i, logType, visitedObjs); 
+				} catch(e){
+					result += logPrint(objName + "." + i, objVal + " " + e, logType);
+				}
 			} else{
 				// If this is not an object - just show its value
 				result += logPrint(objName + "." + i, objVal, logType);
