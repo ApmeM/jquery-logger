@@ -20,16 +20,17 @@
 	var LOG_HTML = 1;
 	var LOG_TEXT = 2;
 
-/**
- * checking error "Permission denied for <file://> to get property XPCComponents.classes"
-**/
-	var test = '';
-	try{
-	    test = Components.classes;
-	} catch(e){
-		alert(e);
+	var logPrint = function(name, value, logType){
+		if(logType == LOG_HTML)
+		{
+			value = ("" + value).replace(/&/gi, '&amp;').replace(/</gi, '&lt;').replace(/>/gi, '&gt;');
+			return "<b>" + name + "</b> = " + value + "<br />";
+		}
+		else if(logType == LOG_TEXT)
+			return name + " = " + value + "\n";
+		else 
+			throw new Error('Index out of range exception: logType = ', logType);
 	}
-    alert(test);
 
 /**
  * Recursive function that check all properties and display
@@ -46,29 +47,22 @@
 		var result = "";
 		// Check all properties of the current object
 	    for (var i in obj) {
-			// If current property is object - we need to show all its properties too
-			if(typeof obj[i] == 'object'){
-				// if this object was not visited - go into its properties
-				if($.inArray(obj[i], visitedObjs) == -1){
-					visitedObjs.push(obj[i]);
-					result += logExpand(obj[i], objName + '.' + i, logType, visitedObjs);
-				}else {
-				// if this object already wisited - just show name and skip it
-					if(logType == LOG_HTML)
-						result += "<b>" + objName + "." + i + "</b> = " + obj[i] + "<br />";
-					else if(logType == LOG_TEXT)
-						result += objName + "." + i + " = " + obj[i] + "\n";
-					else 
-						throw new Error('Index out of range exception: logType = ', logType);
+			var objVal = obj[i];
+			if(
+				// If current property is object - we need to show all its properties too
+				typeof(objVal) == 'object' &&
+				// if this is nsXPCComponent - skip it (or it will show permission denied
+				// if this object was already visited - skip it
+				$.inArray(objVal, visitedObjs) == -1 && Object.prototype.toString.call(objVal) != '[object nsXPCComponents]'
+			){
+				try{
+					visitedObjs.push(objVal);
+					result += logExpand(objVal, objName + '.' + i, logType, visitedObjs);
+				}catch(e){
 				}
 			} else{
 				// If this is not an object - just show its value
-				if(logType == LOG_HTML)
-					result += "<b>" + objName + "." + i + "</b> = " + obj[i] + "<br />";
-				else if(logType == LOG_TEXT)
-					result += objName + "." + i + " = " + obj[i] + "\n";
-				else 
-					throw new Error('Index out of range exception: logType = ', logType);
+				result += logPrint(objName + "." + i, objVal, logType);
 			}
 		}
 		return result;
