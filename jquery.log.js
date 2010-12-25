@@ -9,6 +9,13 @@
  * @version 1.0 
  * @author artem
  * @download http://hg.apmem.org/jq-log/
+ * @usage 
+ * $.log({"name": "value", "test": "test"});
+ * $("#logDiv").log({"name": "value", "test": "test"});
+ * 
+ * WARNING: 
+ * Use $("#logDiv").log($(document)); only in ff and opera. 
+ * Other browsers hang up on this large objects
  */
 
 (function($){
