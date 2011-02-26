@@ -4,6 +4,7 @@
  * (for example div).
  * Created by Artem Votincev (apmem.org)
  * Copyiright (c) 2010 Artem Votincev (apmem.org)
+ * Distributed under BSD license
  *
  * @requires jQuery.js
  * @version 1.0 
