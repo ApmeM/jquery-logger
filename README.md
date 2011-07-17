@@ -4,7 +4,8 @@
 
 jQuery logger plugin allow to log any data not only to browser console, but even to any html element (such as div).
 
-It contain a function to expand javascript objects to log something more usefull then `[Object object]` :)
+It contain a function to expand javascript objects to log something more usefull then [Object object] :). 
+With function to detect recursion usages to prevent brousers to hang up (do not help for IE and chrome :( ).
 
 ## Demonstration
 
