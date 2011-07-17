@@ -43,6 +43,7 @@ If maxLevel is not set - other browsers hang up on such large objects
 Logger have a configuration function logConfig to change predefined parameters that will be applied to all future log() calls.
 
 The following parameters can be set:
+
 * loggerEnabled (default: true) - Set is logger enabled. Logger can be disabled on production sites
 * recursionBehaviour (default 'stop') - Recursion behaviour trigger when object, that detected in current logging process is logged again.
 ** Possible values:
