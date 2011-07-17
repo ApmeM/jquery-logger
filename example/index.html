@@ -11,15 +11,27 @@
 			$(document).ready(function(){
 				$.log("%s is %d years old.", "Bob", 42);
 				$.log({'text':'all images loaded'});
-				$('#script').log({"arr": [{"aa":"asd"}, {"ff":"dd"}], "dd":{"asd":"asd","hgfd":"sdfg"}});
+				$('#log').log({"arr": [{"aa":"asd"}, {"ff":"dd"}], "dd":{"asd":"asd","hgfd":"sdfg"}});
 				var o = {'elem': 'test'};
 				o.recur = o;
 				$.log(o);
-				$('#script').log(o);
+				$('#log').log(o);
 //				$.log($(document));
-//				$('#script').log($(document));
+//				$('#log').log($(document));
 			});
 		</script>
-		<div id='script'></div>
+		<pre>
+			$(document).ready(function(){
+				$.log("%s is %d years old.", "Bob", 42);
+				$.log({'text':'all images loaded'});
+				$('#log').log({"arr": [{"aa":"asd"}, {"ff":"dd"}], "dd":{"asd":"asd","hgfd":"sdfg"}});
+				var o = {'elem': 'test'};
+				o.recur = o;
+				$.log(o);
+				$('#log').log(o);
+//				$.log($(document));
+//				$('#log').log($(document));
+        </pre>
+        <div id='log'></div>
 	</body>
 </html>

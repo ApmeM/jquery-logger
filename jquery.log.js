@@ -9,7 +9,7 @@
  * @requires jQuery.js
  * @version 1.1 
  * @author artem
- * @download http://git.apmem.org/jq-log.git
+ * @download https://github.com/ApmeM/jquery-logger
  * @usage 
  * $.log({"name": "value", "test": "test"});
  * $("#logDiv").log({"name": "value", "test": "test"});
