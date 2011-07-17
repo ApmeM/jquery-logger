@@ -21,16 +21,17 @@
 			});
 		</script>
 		<pre>
-			$(document).ready(function(){
-				$.log("%s is %d years old.", "Bob", 42);
-				$.log({'text':'all images loaded'});
-				$('#log').log({"arr": [{"aa":"asd"}, {"ff":"dd"}], "dd":{"asd":"asd","hgfd":"sdfg"}});
-				var o = {'elem': 'test'};
-				o.recur = o;
-				$.log(o);
-				$('#log').log(o);
-//				$.log($(document));
-//				$('#log').log($(document));
+$(document).ready(function(){
+	$.log("%s is %d years old.", "Bob", 42);
+	$.log({'text':'all images loaded'});
+	$('#log').log({"arr": [{"aa":"asd"}, {"ff":"dd"}], "dd":{"asd":"asd","hgfd":"sdfg"}});
+	var o = {'elem': 'test'};
+	o.recur = o;
+	$.log(o);
+	$('#log').log(o);
+	// $.log($(document));
+	// $('#log').log($(document));
+});
         </pre>
         <div id='log'></div>
 	</body>
