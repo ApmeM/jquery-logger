@@ -3,11 +3,11 @@
  * console.log, error console or specified HTML element
  * (for example div).
  * Created by Artem Votincev (apmem.org)
- * Copyiright (c) 2010 Artem Votincev (apmem.org)
+ * Copyiright (c) 2011 Artem Votincev (apmem.org)
  * Distributed under BSD license
  *
  * @requires jQuery.js
- * @version 1.0 
+ * @version 1.1 
  * @author artem
  * @download http://git.apmem.org/jq-log.git
  * @usage 
