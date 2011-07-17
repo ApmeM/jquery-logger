@@ -23,6 +23,8 @@
 
                 // logging into #log div element with expanding objects recursion object should be displayed as [object Object]
                 $('#log').log({"arr": [{"aa":"asd"}, {"ff":"dd"}], "dd":{"asd":"asd","hgfd":"sdfg"}});
+
+                // working with log config
                 $.logConfig({defaultElement: $('#log'), prefix: 'prefix', maxLevel: 5, recursionBehaviour: 'skip'});
                 $.log(o);
                 $.logConfig({defaultElement: $('#log'), prefix: 'prefix', maxLevel: 5, recursionBehaviour: 'stop'});
