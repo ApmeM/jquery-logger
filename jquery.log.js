@@ -89,10 +89,21 @@
 */
 	var logExpand = function(obj, objName, curLevel, currentConfig){
 		var result = "";
-        if (curLevel == 0)
+        // We have reached the top level
+        // Or recursion detected and should be stopped
+        if 
+            (
+                curLevel == 0 ||
+				(
+                    $.inArray(obj, currentConfig.visitedObjs) != -1 && 
+                    currentConfig.recursionBehaviour == 'stop'
+                )
+            )
         {
             return logPrint(objName, obj, currentConfig.logType);
         }
+
+		currentConfig.visitedObjs.push(obj);
 
 		// Check all properties of the current object
 	    for (var i in obj) {
@@ -100,15 +111,9 @@
 			if(
 				// We need to log all objects
                 // except nsXPCComponent (it will throw permission denied error)
-                // and recursion objects, that was not visited when behaviour is 'stop'
 				typeof(objVal) == 'object' &&
-                Object.prototype.toString.call(objVal) != '[object nsXPCComponents]' &&
-				(
-                    $.inArray(objVal, currentConfig.visitedObjs) == -1 || 
-                    $.inArray(objVal, currentConfig.visitedObjs) != -1 && currentConfig.recursionBehaviour == 'skip'
-                )
+                Object.prototype.toString.call(objVal) != '[object nsXPCComponents]'
 			){
-				currentConfig.visitedObjs.push(objVal);
 				try { 
 					result += logExpand(objVal, objName + '.' + i, curLevel - 1, currentConfig); 
 				} catch(e){
