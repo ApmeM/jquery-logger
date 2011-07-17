@@ -46,9 +46,8 @@ The following parameters can be set:
 
 * loggerEnabled (default: true) - Set is logger enabled. Logger can be disabled on production sites
 * recursionBehaviour (default 'stop') - Recursion behaviour trigger when object, that detected in current logging process is logged again.
-  * * Possible values:
-    * * * 'stop' - if recursion detected - show it as regular string and do not go deeper
-    * * * 'skip' - if recursion detected - it will be expanded anyway until maxLevel level not reached
+  * 'stop' - if recursion detected - show it as regular string and do not go deeper
+  * 'skip' - if recursion detected - it will be expanded anyway until maxLevel level not reached
 * maxLevel (default: -1) - Maximum iteration level (0 means no properties should be displayed). -1 means no maximum level is set.
 * defaultElement (default: null) - default logger element will be used if $.log() is called. if element is null - browser console will be used.
 * prefix(default: 'args' - Prefix for all properties to log.
