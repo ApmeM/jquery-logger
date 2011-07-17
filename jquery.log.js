@@ -32,10 +32,10 @@
         // Possible values:
         // * 'stop' - if recursion detected - show it as regular string and do not go deeper
         // * 'skip' - if recursion detected - it will be expanded anyway until maxLevel level not reached
-        // be carefull if maxLevel is set to null and recursionBehaviour is set to 'skip' - iterations will never stopped and browser will hang up
+        // be carefull if maxLevel is less then 0 and recursionBehaviour is set to 'skip' - iterations will never stopped and browser will hang up
         recursionBehaviour: 'stop',
 
-        // Maximum iteration level (0 means no properties should be displayed). -1 means no maximum level is set.
+        // Maximum iteration level (0 means no properties should be displayed). less then 0 means no maximum level is set (at least maxint level :) ).
         maxLevel: -1,
 
         // Default logger element will be used if $.log() is called. if element is null - browser console will be used.
