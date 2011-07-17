@@ -7,40 +7,28 @@
         <script src="../jquery.log.js"></script>
     </head>
     <body>
-		<script>
-			$(document).ready(function(){
-				$.log("%s is %d years old.", "Bob", 42);
-				$.log({'text':'all images loaded'});
-				$('#log').log({"arr": [{"aa":"asd"}, {"ff":"dd"}], "dd":{"asd":"asd","hgfd":"sdfg"}});
-				var o = {'elem': 'test'};
-				o.recur = o;
-				$.log(o);
-				$('#log').log(o);
-//				$.log($(document));
-//				$('#log').log($(document));
-			});
+		<script id="scriptReal">
+            $(document).ready(function(){
+                $('#log').log({script: $('#scriptReal').text()});
+
+                // preparing recursive object to log
+                var o = {'elem': 'test'};
+                o.recur = o;
+
+                // logging into browser console with all of its benefits
+                $.log("%s is %d years old.", "Bob", 42);
+                $.log({'text':'all images loaded'});
+                $.log(o);
+
+                // logging into #log div element with expanding objects recursion object should be displayed as [object Object]
+                $('#log').log({"arr": [{"aa":"asd"}, {"ff":"dd"}], "dd":{"asd":"asd","hgfd":"sdfg"}});
+                $('#log').log(o);
+
+                // logging large elements, commented out to prevent browser problems.
+                // $.log($(document));
+                // $('#log').log($(document));
+            });
 		</script>
-		<pre>
-$(document).ready(function(){
-
-// logging into browser console with all of its benefits
-	$.log("%s is %d years old.", "Bob", 42);
-	$.log({'text':'all images loaded'});
-
-// logging into #log div element with expanding objects
-	$('#log').log({"arr": [{"aa":"asd"}, {"ff":"dd"}], "dd":{"asd":"asd","hgfd":"sdfg"}});
-
-// logging recursion (second object should be displayed as [Object object]
-	var o = {'elem': 'test'};
-	o.recur = o;
-	$.log(o);
-	$('#log').log(o);
-
-// logging large elements, commented out to prevent browser problems.
-	// $.log($(document));
-	// $('#log').log($(document));
-});
-        </pre>
-        <div id='log'></div>
+        <pre id='log'></pre>
 	</body>
 </html>
