@@ -7,7 +7,7 @@
  * Distributed under BSD license
  *
  * @requires jQuery.js
- * @version 1.1 
+ * @version 1.2 
  * @author artem
  * @download https://github.com/ApmeM/jquery-logger
  * @usage 
@@ -22,6 +22,38 @@
 (function($){
 
 /**
+ * global configuration for the whole plugin
+*/
+    var config = {
+        // Logger can be disabled on production sites
+        loggerEnabled: true,
+
+        // Recursion behaviour trigger when object, that detected in current logging process is logged again.
+        // Possible values:
+        // * 'stop' - if recursion detected - show it as regular string and do not go deeper
+        // * 'skip' - if recursion detected - it will be expanded anyway until maxLevel level not reached
+        // be carefull if maxLevel is set to null and recursionBehaviour is set to 'skip' - iterations will never stopped and browser will hang up
+        recursionBehaviour: 'stop',
+
+        // Maximum iteration level (0 means no properties should be displayed). -1 means no maximum level is set.
+        maxLevel: -1,
+
+        // Default logger element will be used if $.log() is called. if element is null - browser console will be used.
+        defaultElement: null,
+
+        // Prefix for all properties to log into HTML elements.
+        prefix: 'args'
+    };
+
+/**
+ * Configure logger with non-default parameters
+ * @param settings - new configuration settings
+*/
+	$.logConfig = function(settings){ 
+        if (settings) $.extend(config, settings);
+    }
+
+/**
  * Constants used in code to view log in iappropriate format
  * for error console it should be displayed as text
  * for html controls it should be displayed as html
@@ -34,12 +66,12 @@
  * Replace html special chars to be sure we will not run script once again
 */
 	var logPrint = function(name, value, logType){
-		if(logType == LOG_HTML)
+		if(logType == 'html')
 		{
 			value = ("" + value).replace(/&/gi, '&amp;').replace(/</gi, '&lt;').replace(/>/gi, '&gt;');
 			return "<b>" + name + "</b> = " + value + "<br />";
 		}
-		else if(logType == LOG_TEXT)
+		else if(logType == 'text')
 			return name + " = " + value + "\n";
 		else 
 			throw new Error('Index out of range exception: logType = ', logType);
@@ -50,66 +82,107 @@
  * them in specified format
  * @param obj is object to display
  * @param objName is text representation of the object
- * @param logType reflect displaying type (should be one of the types from const section)
- * @param visitedObjs is array with all objects was visited in previous (to avoid recursion)
+ * @param curLevel show current recursion level. If it become 0 - recursion vill be stopped.
  * @throw index out of range exception (logType is not supplied)
  * @return string with all properies of provided object
  * @private
 */
-	var logExpand = function(obj, objName, logType, visitedObjs){
+	var logExpand = function(obj, objName, curLevel, currentConfig){
 		var result = "";
+        if (curLevel == 0)
+        {
+            return logPrint(objName, obj, currentConfig.logType);
+        }
+
 		// Check all properties of the current object
 	    for (var i in obj) {
 			var objVal = obj[i];
 			if(
-				// If current property is object - we need to show all its properties too
+				// We need to log all objects
+                // except nsXPCComponent (it will throw permission denied error)
+                // and recursion objects, that was not visited when behaviour is 'stop'
 				typeof(objVal) == 'object' &&
-				// if this is nsXPCComponent - skip it (or it will show permission denied)
-				// if this object was already visited - skip it
-				$.inArray(objVal, visitedObjs) == -1 && Object.prototype.toString.call(objVal) != '[object nsXPCComponents]'
+                Object.prototype.toString.call(objVal) != '[object nsXPCComponents]' &&
+				(
+                    $.inArray(objVal, currentConfig.visitedObjs) == -1 || 
+                    $.inArray(objVal, currentConfig.visitedObjs) != -1 && currentConfig.recursionBehaviour == 'skip'
+                )
 			){
-				visitedObjs.push(objVal);
+				currentConfig.visitedObjs.push(objVal);
 				try { 
-					result += logExpand(objVal, objName + '.' + i, logType, visitedObjs); 
+					result += logExpand(objVal, objName + '.' + i, curLevel - 1, currentConfig); 
 				} catch(e){
-					result += logPrint(objName + "." + i, objVal + " " + e, logType);
+					result += logPrint(objName + "." + i, objVal + " " + e, currentConfig.logType);
 				}
 			} else{
 				// If this is not an object - just show its value
-				result += logPrint(objName + "." + i, objVal, logType);
+				result += logPrint(objName + "." + i, objVal, currentConfig.logType);
 			}
 		}
 		return result;
 	}
+
+    var logConsole = function(obj, currentConfig) {
+        // If we can write into console - we will do it:
+		// firefox (with firebug), chrome and opera know what to do with it
+		if(window.console && window.console.log) {
+			if(window.console.log.apply) {
+				console.log.apply(window.console, obj);
+			} else {
+				console.log(obj);
+			}
+		} else {
+			// Firebug is not installed (or this browser do not support console)
+			// expand object and throw an error to log it into error log
+            $.extend(currentConfig, {logType: 'text', visitedObjs: []}); 
+			var expanded = logExpand(obj, currentConfig.prefix, currentConfig.maxLevel, currentConfig);
+		    throw new Error(expanded);
+		}
+     }
+/**
+ * main logging function
+*/
+    var log = function(element, arg){
+        if (!config.loggerEnabled)
+            return true;
+
+		// Going to log into the specified control
+		if(arg.length == 0) // Nothing to log, everything logged successfully :)
+			return true;
+
+        if (element == null){
+            element = config.defaultElement;
+        }
+
+        var currentConfig = {};
+        $.extend(currentConfig, config); 
+
+
+        // Make logging in separate thread to not stop main thread if something fail.
+        setTimeout(function(){
+		    // Splice arguments object into array of objects 
+	        // (it have a very strange behavior)
+            var obj = [].slice.call(arg);
+
+            // No element set, and default element is not set eather
+            // Will log into the browser console
+            if (element == null){
+                logConsole(obj);
+            }
+
+            $.extend(currentConfig, {logType: 'html', visitedObjs: []}); 
+            var text = logExpand(obj, currentConfig.prefix, currentConfig.maxLevel, currentConfig);
+            $(element).html($(element).html() + "<hr>" + text);
+        }, 0);
+    }
+
 /**
  * jQuery extension $.log print all arguments of the function into window.console
  * or if it is not exist - to error console with the help of throw Error in separate thread.
  * @member $
 */
 	$.log = function(){ 
-		if(arguments.length == 0) // Nothing to log, everything logged successfully :)
-			return true;
-
-		// Splice arguments object into array of objects 
-		// (it have a very strange behavior)
-		var args = [].slice.call(arguments);
-		
-		// If we can write into console - we will do it:
-		// firefox (with firebug), chrome and opera know what to do with it
-		if(window.console && window.console.log) {
-			if(window.console.log.apply) {
-				console.log.apply(window.console, args);
-			} else {
-				console.log(args);
-			}
-		} else {
-			// Firebug is not installed (or this browser do not support console)
-			// expand object and throw it in separate thread to not stop current operation
-			var arr = [];
-			var expanded = logExpand(args, 'args', LOG_TEXT, arr);
-			arr = [];
-		    setTimeout(function(){ throw new Error(expanded); }, 0);
-		}
+        log(null, arguments);
 		return true;
 	};
 
@@ -117,13 +190,9 @@
  * jQuery extension $.fn.log print all arguments of the function into the html object
  * @member $
 */
-	$.fn.log = function(obj) {
-		// Going to log into the specified control
-//		var obj = [].slice.call(arguments);
-		var arr = [obj];
-		var args = logExpand(obj, 'args', LOG_HTML, arr);
-		this.html(this.html() + "<hr>" + args);
-		arr = [];
+	$.fn.log = function() {
+        log(this, arguments);
+        return true;
 	}
 })(jQuery);
 
