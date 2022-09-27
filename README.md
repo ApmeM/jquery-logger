@@ -9,7 +9,7 @@ With function to detect recursion usages to prevent brousers to hang up (do not 
 
 ## Demonstration
 
-Demonstration abailable at http://apmem.github.com/jquery-logger/example
+Demonstration abailable at http://apmem.github.io/jquery-logger/example
 
 ## browser support
 
