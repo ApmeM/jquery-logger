@@ -1,0 +1,29 @@
+{
+  "name": "@apmem/jquery-logger",
+  "version": "1.0.0",
+  "description": "jQuery logger plugin allow to log any data not only to browser console, but even to any html element (such as div).",
+  "main": "jquery.log.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "repository": "https://github.com/ApmeM/jquery-logger.git",
+  "keywords": [
+    "jquery",
+    "log"
+  ],
+  "author": "ApmeM",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ApmeM/jquery-logger/issues"
+  },
+  "homepage": "https://github.com/ApmeM/jquery-logger#readme",
+  "dependencies": {
+    "jquery": "^3.6.1"
+  },
+  "publishConfig": {
+    "apmem:registry": "https://npm.pkg.github.com"
+  }
+}
