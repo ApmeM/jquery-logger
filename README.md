@@ -9,7 +9,7 @@ With function to detect recursion usages to prevent brousers to hang up (do not 
 
 ## Demonstration
 
-Demonstration abailable at http://apmem.github.io/jquery-logger/example
+Demonstration abailable at http://apmem.github.io/jquery-logger
 
 ## browser support
 
@@ -55,10 +55,4 @@ The following parameters can be set:
 ### WARNING:
 
 Be carefull if maxLevel is set to -1 and recursionBehaviour is set to 'skip' - iterations will never stopped and browser will hang up
-
-## Copyrights
-
-Created by Artem Votincev (apmem.org)
-
-Distributed under BSD license
 
