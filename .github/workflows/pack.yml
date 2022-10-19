@@ -39,7 +39,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  publish-gpr:
+  publish-ghpages:
     needs: build
     runs-on: ubuntu-latest
     steps:
